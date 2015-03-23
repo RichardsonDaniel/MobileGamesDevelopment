@@ -8,6 +8,7 @@ preload.prototype = {
         this.game.load.image("egg", "images/egg.png");
         this.game.load.image("logo", "images/chicken.png");
         this.game.load.image("play", "images/play.png");
+        this.game.load.image("background", "images/background.jpg");
     },
     create: function(){
         this.game.state.start("GameTitle");

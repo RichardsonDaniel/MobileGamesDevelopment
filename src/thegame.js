@@ -2,6 +2,7 @@ var theGame = function(game){}
 
 theGame.prototype = {
     create: function() {
+        this.game.add.tileSprite(0, 0, 640, 1136, 'background');
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.gravity.y = 250;
         this.game.input.onDown.add(this.addEgg, this);
