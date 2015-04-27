@@ -3,6 +3,7 @@
 <head>
 	<script src="js/phaser.min.js"></script>
 	<script src="js/player.js"></script>
+    <script src="js/egg.js"></script>
 	
 	<script>
 		
@@ -10,17 +11,20 @@
 				{ preload: preload, create: create, update: update });
 				
 		function preload () {
-			game.load.image('logo', 'img/ntgames.png');
-			game.load.image('backgroundImage', 'img/background.png');
-			game.load.spritesheet('wolf', 'img/player.png', 335, 325, 4);
+			game.load.image('logo','img/ntgames.png');
+			game.load.image('backgroundImage','img/background.png');
+			game.load.spritesheet('wolf','img/player.png', 335, 325, 4);
+            game.load.image('egg','img/egg.png');
 		}
 		
 		var background;
 		var logo;
 		var gameRunning;
 		var player = new Player();
+        var maximumNumberOfEggs = 4;    // maximum number of active eggs
+        var eggs = [];                  // array holding all the eggs
 		
-		function create {} {
+		function create() {
 			game.physics.startSystem(Phaser.Physics.ARCADE);
 			background = game.add.sprite(0, 0, 'backgroundImage');
 			player.create();
@@ -33,10 +37,29 @@
 			gameRunning = true;
 		}
 		
-		function update () {
+		function update() {
 			if (gameRunning) {
-				player.update ();
-			}	
+                player.update();
+                /*
+                if we can add eggs (not reached maximum)
+                then add new eggs
+                 */
+                if (eggs.length < maximumNumberOfEggs) {
+                    eggs.push(new Egg(game, player));
+                }
+                /*
+                for all the active eggs, update them
+                the other ones, remove them
+                */
+                for (var i = 0; i < eggs.length; i++) {
+                    if (eggs[i].active) {
+                        eggs[i].update();
+                    }
+                    else {
+                        eggs.splice(i, 1);
+                    }
+                }
+            }
 		}
 		
 	</script>
