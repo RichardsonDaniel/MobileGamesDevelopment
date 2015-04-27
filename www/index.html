@@ -2,25 +2,28 @@
 <html>
 <head>
 	<script src="js/phaser.min.js"></script>
-	
+	<script src="js/player.js"></script>
 	
 	<script>
 		
 		var game = new Phaser.Game(960,600, Phaser.AUTO, 'phaser-example',
-				{ preload: preload, create: create });
+				{ preload: preload, create: create, update: update });
 				
 		function preload () {
 			game.load.image('logo', 'img/ntgames.png');
 			game.load.image('backgroundImage', 'img/background.png');
+			game.load.spritesheet('wolf', 'img/player.png', 335, 325, 4);
 		}
 		
 		var background;
 		var logo;
+		var gameRunning;
+		var player = new Player();
 		
 		function create {} {
 			game.physics.startSystem(Phaser.Physics.ARCADE);
 			background = game.add.sprite(0, 0, 'backgroundImage');
-			
+			player.create();
 			logo = game.add.sprite(0, 0, 'logo');
 			game.input.onDown.add(removeLogo, this);
 		}
@@ -28,6 +31,12 @@
 		function removeLogo() {
 			logo.kill();
 			gameRunning = true;
+		}
+		
+		function update () {
+			if (gameRunning) {
+				player.update ();
+			}	
 		}
 		
 	</script>
