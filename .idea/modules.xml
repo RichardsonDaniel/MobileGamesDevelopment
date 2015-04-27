@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MobileGamesDevelopment.iml" filepath="$PROJECT_DIR$/.idea/MobileGamesDevelopment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Eggdrop.iml" filepath="$PROJECT_DIR$/.idea/Eggdrop.iml" />
     </modules>
   </component>
 </project>
