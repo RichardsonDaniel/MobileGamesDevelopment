@@ -1,7 +1,7 @@
 
 Player = function() {
 
-    var orientation = 0;    // will hold the sprite index, for each location
+    var orientation;        // will hold the sprite index, for each location
     var cursors;            // records key strokes, will be removed later
     var wolf;               // the player
 
@@ -26,11 +26,9 @@ Player.prototype.create = function() {
     basket. we will set the default starting position to bottom left
     this will be used to check collision of the eggs against it
      */
-    this.basketPosition = {
-        x: BL.x,
-        y: BL.y
-    }
+    this.basketPosition = BL;
     this.wolf.position.x = 365;
+    this.orientation = 0;
     this.cursors = game.input.keyboard.createCursorKeys();
 };
 

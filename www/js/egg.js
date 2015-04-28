@@ -124,6 +124,7 @@ Egg.prototype.update = function() {
     if (this.Egg.y > 540) {
         this.active = false;
         this.Egg.body.velocity.y = 0;
+        this.Egg.loadTexture('splash');
     }
 
     /*
