@@ -4,6 +4,7 @@ Player = function() {
     var orientation;        // will hold the sprite index, for each location
     var cursors;            // records key strokes, will be removed later
     var wolf;               // the player
+    var lives;
 
     // position of basket origin on different locations
     TL = { x: 265, y: 315 };    // for top left
@@ -16,6 +17,7 @@ Player = function() {
 Player.prototype.create = function() {
 
     this.collected = 0;
+    this.lives = 3;
     // the point x:370, y:370 is the position of the origin of the sprite
     this.wolf = game.add.sprite(370, 370, 'wolf', this.orientation);
     this.wolf.anchor.setTo(0.5, 0.5);
@@ -87,4 +89,31 @@ Player.prototype.update = function() {
     }
 
     this.wolf.frame = this.orientation;
-}
+};
+
+// function to die one life
+Player.prototype.decreaseLives = function() {
+    if (this.lives > 0) this.lives--;
+};
+
+// function to add bonus one life up to 4 lives
+Player.prototype.increaseLives = function() {
+    if (lives === 3) lives = 4;
+    if (lives === 2) lives = 3;
+    if (lives === 1) lives = 2;
+};
+
+// function to increase the total of collected eggs
+Player.prototype.collect = function() {
+    this.collected++;
+};
+
+// obvious, a getter function for the collected variable
+Player.prototype.getCollectedEggs = function() {
+    return this.collected;
+};
+
+// and one for lives
+Player.prototype.getLives = function() {
+    return this.lives;
+};

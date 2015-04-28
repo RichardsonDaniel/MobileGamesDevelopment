@@ -125,6 +125,7 @@ Egg.prototype.update = function() {
         this.active = false;
         this.Egg.body.velocity.y = 0;
         this.Egg.loadTexture('splash');
+        this.player.decreaseLives();
     }
 
     /*
@@ -138,6 +139,7 @@ Egg.prototype.update = function() {
             this.Egg.x = 500;
             this.Egg.body.velocity.y = 0;
             this.Egg.body.velocity.x = 0;
+            this.player.collect();
         }
     }
 
