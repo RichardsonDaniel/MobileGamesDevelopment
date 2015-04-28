@@ -43,26 +43,54 @@ Egg.prototype.resetPosition = function() {
     /*
     based on the randomized location, set the position and the
     right direction (left to right or right to left)
+    also set the source where it came from, so we only check collision
+    with the basket positioned close to the source
      */
     switch (location) {
         case 0: position = bottomLeft;
             this.direction = 1;
+            this.source = 0;
             break;
         case 1: position = bottomRight;
             this.direction = -1;
+            this.source = 1;
             break;
         case 2: position = topLeft;
             this.direction = 1;
+            this.source = 2;
             break;
         case 3: position = topRight;
             this.direction = -1;
+            this.source = 3;
             break;
         default: break;
     }
 
     this.x = position.x;
     this.y = position.y;
-}
+};
+
+/*
+ collision check against the position of the basket
+ first we create the boundaries from the origin of the basket
+ */
+Egg.prototype.contacts = function(x, y) {
+
+    // based on a 108 by 90 collision body for the basket
+    left = x - 54;
+    right = x + 54;
+    top = y - 45;
+    bottom = y + 45;
+
+    // next we check if it is outside and return false if so
+    if (this.Egg.x < left) return false;
+    if (this.Egg.x > right) return false;
+    if (this.Egg.y > bottom) return false;
+    if (this.Egg.y < top) return false;
+
+    // otherwise if we arrive here, at this point we have a collision
+    return true;
+};
 
 Egg.prototype.update = function() {
     /*
@@ -97,4 +125,20 @@ Egg.prototype.update = function() {
         this.active = false;
         this.Egg.body.velocity.y = 0;
     }
+
+    /*
+    if there`s contact with the basket
+    deactivate the egg and get it out of the screen until it gets deleted
+     */
+    if (this.source === this.player.orientation) {
+        if (this.contacts(this.player.basketPosition.x, this.player.basketPosition.y)) {
+            this.active = false;
+            this.Egg.y = 1000;
+            this.Egg.x = 500;
+            this.Egg.body.velocity.y = 0;
+            this.Egg.body.velocity.x = 0;
+        }
+    }
+
 };
+
