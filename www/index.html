@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+    <script src="js/jquery-2.1.0.js"></script>
 	<script src="js/phaser.min.js"></script>
 	<script src="js/player.js"></script>
     <script src="js/egg.js"></script>
@@ -11,7 +12,7 @@
 		
 		var game = new Phaser.Game(960,600, Phaser.AUTO, 'phaser-example',
 				{ preload: preload, create: create, update: update, render: render });
-				
+
 		function preload () {
 			game.load.image('logo','img/ntgames.png');
 			game.load.image('backgroundImage','img/background.png');
@@ -23,12 +24,13 @@
             game.load.spritesheet('button_topRight','img/topRight.png',150, 120,3);
             game.load.spritesheet('button_bottomLeft','img/bottomLeft.png',150, 120,3);
             game.load.spritesheet('button_bottomRightLeft','img/bottomRight.png',150, 120,3);
+            game.load.image('gameOver','img/gameover.png');
 
         }
 		
 		var background;
 		var logo;
-		var gameRunning;
+		var gameRunning = false;
 		var player = new Player();
         var maximumNumberOfEggs = 1;    // maximum number of active eggs
         var eggs = [];                  // array holding all the eggs
@@ -36,6 +38,8 @@
 		var input = new Input(player,game);// class that handles the touch input
         var delay;                      // variable used to create eggs at random intervals
                                         // before this all (maxeNumberOfEggs) eggs were created at once
+        var uri = "http://mcm-highscores-hrd.appspot.com/score?";
+        var gameOver;
 
 		function create() {
         	game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -53,8 +57,65 @@
 			gameRunning = true;
             input.showButtons(true);
 		}
-		
-		function update() {
+
+        function nameRequest() {
+            var name = prompt("Please set your name to register your score", "Player");
+            return name;
+        }
+
+        function submitScore(game, name, email, score) {
+            var url = uri + "score?&game={0}&nickname={1}&email={2}&score={3}&func=?";
+            url = url.replace('{0}', game);
+            url = url.replace('{1}', name);
+            url = url.replace('{2}', email);
+            url = url.replace('{3}', score);
+            document.getElementById('url').innerText = url;
+
+            $.ajax({
+                type:  "GET",
+                url:   url,
+                async: true,
+                contentType: 'application/json',
+                dataType: 'jsonp',
+                success: function (json) {
+                    $("#result").text(json.result);
+                },
+                error: function (e) {
+                    window.alert(e.message);
+                }
+            });
+        };
+
+        var obj;
+
+        function showScoreTable(obj) {
+            var s = "", i;
+            for (i = 0; i < obj.scores.length; i += 1) {
+                s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
+            }
+            document.getElementById("scoretable").innerHTML = s;
+        }
+
+        function getTable() {
+            var url = "http://www.mcm-highscores-hrd.appspot.com/scoresjson?game=EggDrop&func=?";
+            document.getElementById('url').innerText = url;
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: true,
+                // Note, instead of this we could have a success function...
+                jsonpCallback: 'showScoreTable',
+                contentType: 'application/json',
+                dataType: 'jsonp',
+                error: function (e) {
+                    window.alert(e.message);
+                }
+
+            });
+        }
+
+        function update() {
+            if (player.getLives() === 0) gameRunning = false;
 			if (gameRunning) {
                 player.update();
 
@@ -124,6 +185,20 @@
                 }
                 score.setLives(player.getLives());
                 score.setScore(player.getCollectedEggs())
+                if (gameRunning) {
+                    if (player.getLives()=== 0)
+                    {
+                        gameOver = game.add.sprite(0,0,'gameOver');
+                        maximumNumberOfEggs = 0;
+                        name = nameRequest();
+                        var email = 'Richardson.daniel@hotmail.co.uk';
+                        var gamename = 'EggDrop';
+                        submitScore(gamename, name, email, score.getScore());
+                        getTable();
+                        showScoreTable();
+                        gameRunning = false;
+                    }
+                }
             }
 		}
 
@@ -133,7 +208,8 @@
 		
 	</script>
 </head>
-<body bgcolor='black'>
-<p id="nameRequest"></p>
+<body>
+<div id='url'></div>
+<div id='scoretable'></div>
 </body>
 </html>
