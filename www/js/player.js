@@ -98,9 +98,9 @@ Player.prototype.decreaseLives = function() {
 
 // function to add bonus one life up to 4 lives
 Player.prototype.increaseLives = function() {
-    if (lives === 3) lives = 4;
-    if (lives === 2) lives = 3;
-    if (lives === 1) lives = 2;
+    if (this.lives === 3) this.lives = 4;
+    if (this.lives === 2) this.lives = 3;
+    if (this.lives === 1) this.lives = 2;
 };
 
 // function to increase the total of collected eggs
