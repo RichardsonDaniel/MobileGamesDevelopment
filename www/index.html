@@ -5,6 +5,7 @@
 	<script src="js/player.js"></script>
     <script src="js/egg.js"></script>
     <script src="js/score.js"></script>
+    <script src="js/input.js"></script>
 	
 	<script>
 		
@@ -18,7 +19,12 @@
             game.load.image('egg','img/egg.png');
             game.load.image('splash','img/splash.png');
             game.load.spritesheet('lives','img/lives.png', 128,32,5);
-		}
+            game.load.spritesheet('button_topLeft','img/topLeft.png', 150, 120,3);
+            game.load.spritesheet('button_topRight','img/topRight.png',150, 120,3);
+            game.load.spritesheet('button_bottomLeft','img/bottomLeft.png',150, 120,3);
+            game.load.spritesheet('button_bottomRightLeft','img/bottomRight.png',150, 120,3);
+
+        }
 		
 		var background;
 		var logo;
@@ -27,7 +33,8 @@
         var maximumNumberOfEggs = 2;    // maximum number of active eggs
         var eggs = [];                  // array holding all the eggs
         var score = new Score();        // class that will hold the score and lives
-		
+		var input = new Input(player,game);
+
 		function create() {
         	game.physics.startSystem(Phaser.Physics.ARCADE);
 			background = game.add.sprite(0, 0, 'backgroundImage');
@@ -35,11 +42,14 @@
 			logo = game.add.sprite(0, 0, 'logo');
 			game.input.onDown.add(removeLogo, this);
             score.create();
+            input.create();
+            input.showButtons(false);
 		}
 		
 		function removeLogo() {
 			logo.kill();
 			gameRunning = true;
+            input.showButtons(true);
 		}
 		
 		function update() {
