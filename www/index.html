@@ -42,6 +42,9 @@
         var gameOver;
 
 		function create() {
+            game.scale.forceOrientation(true)
+            game.scale.startFullScreen(true);
+            game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         	game.physics.startSystem(Phaser.Physics.ARCADE);
 			background = game.add.sprite(0, 0, 'backgroundImage');
 			player.create();
@@ -208,7 +211,7 @@
 		
 	</script>
 </head>
-<body>
+<body bgcolor="black">
 <div id='url'></div>
 <div id='scoretable'></div>
 </body>
