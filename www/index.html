@@ -41,7 +41,9 @@
         var About;
 		var gameRunning = false;
         var logoRemoved = false;
-        var HowToRemoved = false;
+        var howToRemoved = false;
+        var scoreSubmitted = false;
+        var rankListObtained = false;
 		var player = new Player();
         var maximumNumberOfEggs = 1;    // maximum number of active eggs
         var eggs = [];                  // array holding all the eggs
@@ -65,7 +67,7 @@
             About = game.add.sprite(0, 0, 'about');
             Hint = game.add.sprite(0, 0, 'how');
 			logo = game.add.sprite(0, 0, 'logo');
-			game.input.onDown.add(skipIntro, this);
+			game.input.onDown.add(runOnKeyPress, this);
             score.create();
             score.makeInvisible();
             input.create();
@@ -83,10 +85,13 @@
                     remove the How Screen
             else
                 remove the logo
+
+            also get the highscores from the database on key press after
+            the score has been submitted
         */
-		function skipIntro() {
+		function runOnKeyPress() {
             if (logoRemoved) {
-                if (HowToRemoved) {
+                if (howToRemoved) {
                     About.kill();
                     gameRunning = true;
                     input.showButtons(true);
@@ -95,7 +100,7 @@
                 else
                 {
                     Hint.kill();
-                    HowToRemoved = true;
+                    howToRemoved = true;
                 }
 
             }
@@ -103,7 +108,16 @@
                 logo.kill();
                 logoRemoved = true;
             }
+
+            if (scoreSubmitted)
+            {
+                if (!rankListObtained) {
+                    getTable();
+                    rankListObtained = true;
+                }
+            }
 		}
+
 
         function nameRequest() {
             var name = prompt("Please set your name to register your score", "Player");
@@ -136,12 +150,14 @@
         };
 
         function showScoreTable(obj) {
-            var s = "", i;
-            for (i = 0; i < obj.scores.length; i += 1) {
-                s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
+            if (obj !== undefined) {
+                var s = "", i;
+                for (i = 0; i < obj.scores.length; i += 1) {
+                    s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
+                }
+                // uncomment if you want to have this url shown on screen
+                document.getElementById("url").innerHTML = s;
             }
-            // uncomment if you want to have this url shown on screen
-            document.getElementById("url").innerHTML = s;
         }
 
         function getTable() {
@@ -156,7 +172,6 @@
                 contentType: 'application/json',
                 dataType: 'jsonp',
                 error: function (e) {
-                    window.alert(e.message);
                 }
 
             });
@@ -239,6 +254,11 @@
                 }
                 score.setLives(player.getLives());
                 score.setScore(player.getCollectedEggs())
+                // checking this again to make sure it only runs once
+                // we know that at this stage the game is still running,
+                // but this loop won`t be executed after the player dies
+                // so we check if he is dead and then get the player name and
+                // submit the scores
                 if (gameRunning) {
                     if (player.getLives()=== 0)
                     {
@@ -247,9 +267,10 @@
                         name = nameRequest();
                         var email = 'Richardson.daniel@hotmail.co.uk';
                         var gamename = 'EggDrop';
-                        //submitScore(gamename, name, email, score.getScore());
-                        getTable();
-                        //showScoreTable();
+                        if (!scoreSubmitted) {
+                            submitScore(gamename, name, email, score.getScore());
+                            scoreSubmitted = true;
+                        }
                         gameRunning = false;
                     }
                 }
