@@ -144,7 +144,7 @@
                     $("#result").text(json.result);
                 },
                 error: function (e) {
-                    window.alert(e.message);
+                    console.log("Could not POST data to database. Error code: ",e.message);
                 }
             });
         };
@@ -172,7 +172,7 @@
                 contentType: 'application/json',
                 dataType: 'jsonp',
                 error: function (e) {
-                    console.log("Could not get data from database. Error code: ",e.message);
+                    console.log("Could not GET data from database. Error code: ",e.message);
                 }
 
             });
