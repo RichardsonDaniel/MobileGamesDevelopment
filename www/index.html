@@ -15,6 +15,8 @@
 
 		function preload () {
 			game.load.image('logo','img/ntgames.png');
+            game.load.image('how','img/how.png');
+            game.load.image('about', 'img/about.png');
 			game.load.image('backgroundImage','img/background.png');
 			game.load.spritesheet('wolf','img/player.png', 335, 325, 4);
             game.load.image('egg','img/egg.png');
@@ -35,7 +37,11 @@
 		
 		var background;
 		var logo;
+        var Hint;
+        var About;
 		var gameRunning = false;
+        var logoRemoved = false;
+        var HowToRemoved = false;
 		var player = new Player();
         var maximumNumberOfEggs = 1;    // maximum number of active eggs
         var eggs = [];                  // array holding all the eggs
@@ -43,7 +49,7 @@
 		var input = new Input(player,game);// class that handles the touch input
         var delay;                      // variable used to create eggs at random intervals
                                         // before this all (maxeNumberOfEggs) eggs were created at once
-        var uri = "http://mcm-highscores-hrd.appspot.com/score?";
+        var uri = "http://mcm-highscores-hrd.appspot.com/";
         var gameOver;
         var soundGameOver;
         var soundHundred;
@@ -56,20 +62,47 @@
         	game.physics.startSystem(Phaser.Physics.ARCADE);
 			background = game.add.sprite(0, 0, 'backgroundImage');
 			player.create();
+            About = game.add.sprite(0, 0, 'about');
+            Hint = game.add.sprite(0, 0, 'how');
 			logo = game.add.sprite(0, 0, 'logo');
-			game.input.onDown.add(removeLogo, this);
+			game.input.onDown.add(skipIntro, this);
             score.create();
+            score.makeInvisible();
             input.create();
             input.showButtons(false);
 
             soundGameOver = game.add.audio('gameover');     // sound to be played at the end of the game
             soundHundred = game.add.audio('hundred');       // sound to be played every 100 collected eggs
 		}
-		
-		function removeLogo() {
-			logo.kill();
-			gameRunning = true;
-            input.showButtons(true);
+
+        /*
+            So if we have removed the logo
+                check if we have removed the How Screen
+                    then remove the About Screen and start the game
+                else
+                    remove the How Screen
+            else
+                remove the logo
+        */
+		function skipIntro() {
+            if (logoRemoved) {
+                if (HowToRemoved) {
+                    About.kill();
+                    gameRunning = true;
+                    input.showButtons(true);
+                    score.makeVisible();
+                }
+                else
+                {
+                    Hint.kill();
+                    HowToRemoved = true;
+                }
+
+            }
+            else {
+                logo.kill();
+                logoRemoved = true;
+            }
 		}
 
         function nameRequest() {
@@ -108,7 +141,7 @@
                 s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
             }
             // uncomment if you want to have this url shown on screen
-            // document.getElementById("scoretable").innerHTML = s;
+            document.getElementById("url").innerHTML = s;
         }
 
         function getTable() {
@@ -214,9 +247,9 @@
                         name = nameRequest();
                         var email = 'Richardson.daniel@hotmail.co.uk';
                         var gamename = 'EggDrop';
-                        submitScore(gamename, name, email, score.getScore());
+                        //submitScore(gamename, name, email, score.getScore());
                         getTable();
-                        showScoreTable();
+                        //showScoreTable();
                         gameRunning = false;
                     }
                 }
