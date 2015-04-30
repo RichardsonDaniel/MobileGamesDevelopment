@@ -172,6 +172,7 @@
                 contentType: 'application/json',
                 dataType: 'jsonp',
                 error: function (e) {
+                    console.log("Could not get data from database. Error code: ",e.message);
                 }
 
             });
