@@ -4,7 +4,10 @@ Player = function() {
     var orientation;        // will hold the sprite index, for each location
     var cursors;            // records key strokes, will be removed later
     var wolf;               // the player
-    var lives;
+    var lives;              // number of lives left
+    var soundCollect;       // sound tag for collect action
+    var soundSplash;        // sound tag for broken egg
+    var soundLife;          // sound to be played with every extra life gained
 
     // position of basket origin on different locations
     TL = { x: 265, y: 315 };    // for top left
@@ -32,6 +35,14 @@ Player.prototype.create = function() {
     this.wolf.position.x = 365;
     this.orientation = 0;
     this.cursors = game.input.keyboard.createCursorKeys();
+
+    /*
+    here is where we initialize our sounds to be played on
+    collision with the egg, or on lives decrease
+     */
+    this.collectSound = game.add.audio('collect');
+    this.splashSound = game.add.audio('splash');
+    this.soundLife = game.add.audio('life');
 };
 
 // the following 4 functions will be used for easier call when touch
@@ -93,11 +104,15 @@ Player.prototype.update = function() {
 
 // function to die one life
 Player.prototype.decreaseLives = function() {
-    if (this.lives > 0) this.lives--;
+    if (this.lives > 0) {
+        this.lives--;
+        this.splashSound.play();
+    }
 };
 
 // function to add bonus one life up to 4 lives
 Player.prototype.increaseLives = function() {
+    this.soundLife.play();
     if (this.lives === 3) this.lives = 4;
     if (this.lives === 2) this.lives = 3;
     if (this.lives === 1) this.lives = 2;
@@ -106,6 +121,7 @@ Player.prototype.increaseLives = function() {
 // function to increase the total of collected eggs
 Player.prototype.collect = function() {
     this.collected++;
+    this.collectSound.play();
 };
 
 // obvious, a getter function for the collected variable

@@ -25,6 +25,11 @@
             game.load.spritesheet('button_bottomLeft','img/bottomLeft.png',150, 120,3);
             game.load.spritesheet('button_bottomRightLeft','img/bottomRight.png',150, 120,3);
             game.load.image('gameOver','img/gameover.png');
+            game.load.audio('splash','snd/splash.ogg');
+            game.load.audio('collect','snd/collect.ogg');
+            game.load.audio('hundred','snd/100.ogg');
+            game.load.audio('life','snd/extralife.ogg');
+            game.load.audio('gameover','snd/gameover.ogg');
 
         }
 		
@@ -40,6 +45,9 @@
                                         // before this all (maxeNumberOfEggs) eggs were created at once
         var uri = "http://mcm-highscores-hrd.appspot.com/score?";
         var gameOver;
+        var soundGameOver;
+        var soundHundred;
+        var soundLife;
 
 		function create() {
             game.scale.forceOrientation(true)
@@ -53,6 +61,9 @@
             score.create();
             input.create();
             input.showButtons(false);
+
+            soundGameOver = game.add.audio('gameover');     // sound to be played at the end of the game
+            soundHundred = game.add.audio('hundred');       // sound to be played every 100 collected eggs
 		}
 		
 		function removeLogo() {
@@ -72,7 +83,9 @@
             url = url.replace('{1}', name);
             url = url.replace('{2}', email);
             url = url.replace('{3}', score);
-            document.getElementById('url').innerText = url;
+
+            // uncomment if you want to have this url shown on screen
+            // document.getElementById('url').innerText = url;
 
             $.ajax({
                 type:  "GET",
@@ -89,19 +102,18 @@
             });
         };
 
-        var obj;
-
         function showScoreTable(obj) {
             var s = "", i;
             for (i = 0; i < obj.scores.length; i += 1) {
                 s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
             }
-            document.getElementById("scoretable").innerHTML = s;
+            // uncomment if you want to have this url shown on screen
+            // document.getElementById("scoretable").innerHTML = s;
         }
 
         function getTable() {
             var url = "http://www.mcm-highscores-hrd.appspot.com/scoresjson?game=EggDrop&func=?";
-            document.getElementById('url').innerText = url;
+            // document.getElementById('url').innerText = url;
             $.ajax({
                 type: "GET",
                 url: url,
@@ -171,6 +183,12 @@
                             case 200: player.increaseLives(); break;
                             default : break;
                         }
+                        // when the total eggs divide exactly by 100 and it is not 0
+                        // play the hundred sound
+                        if (player.getCollectedEggs() && player.getCollectedEggs() % 100 === 0)
+                        {
+                            soundHundred.play();
+                        }
                     }
                 }
                 /*
@@ -183,7 +201,7 @@
                     }
                     else {
                         eggs.splice(i, 1);
-                        delay = 50-player.getCollectedEggs();
+                        delay = 25-player.getCollectedEggs();
                     }
                 }
                 score.setLives(player.getLives());

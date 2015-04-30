@@ -103,8 +103,8 @@ Egg.prototype.update = function() {
     */
     if (this.Egg.x < 226 || this.Egg.x > 740)
     {
-        this.Egg.body.velocity.x += 1 * this.direction;
-        this.Egg.body.velocity.y += 0.5;
+        this.Egg.body.velocity.x += 2 * this.direction;
+        this.Egg.body.velocity.y += 1;
     }
     /*
     otherwise don`t move on x axis and apply only an arcade gravity
