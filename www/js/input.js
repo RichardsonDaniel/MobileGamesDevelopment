@@ -44,10 +44,10 @@ Input.prototype.showButtons = function(trueOrFalse) {
 
 // creator for input
 Input.prototype.create = function() {
-    this.buttonTL = this.game.add.button(0,110, 'button_topLeft', moveTopLeft, this, 1, 2, 0, 2);
-    this.buttonTR = this.game.add.button(810,110, 'button_topRight', moveTopRight, this, 1, 2, 0, 2);
-    this.buttonBL = this.game.add.button(0,239, 'button_bottomLeft', moveBottomLeft, this, 1, 2, 0, 2);
-    this.buttonBR = this.game.add.button(810,239, 'button_bottomRightLeft', moveBottomRight, this, 1, 2, 0, 2);
+    this.buttonTL = this.game.add.button(0,29, 'button_topLeft', moveTopLeft, this, 1, 2, 0, 2);
+    this.buttonTR = this.game.add.button(760,29, 'button_topRight', moveTopRight, this, 1, 2, 0, 2);
+    this.buttonBL = this.game.add.button(0,238, 'button_bottomLeft', moveBottomLeft, this, 1, 2, 0, 2);
+    this.buttonBR = this.game.add.button(760,237, 'button_bottomRightLeft', moveBottomRight, this, 1, 2, 0, 2);
 
     this.showButtons(false);
 }

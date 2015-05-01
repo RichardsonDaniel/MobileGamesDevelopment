@@ -22,10 +22,10 @@
             game.load.image('egg','img/egg.png');
             game.load.image('splash','img/splash.png');
             game.load.spritesheet('lives','img/lives.png', 128,32,5);
-            game.load.spritesheet('button_topLeft','img/topLeft.png', 150, 120,3);
-            game.load.spritesheet('button_topRight','img/topRight.png',150, 120,3);
-            game.load.spritesheet('button_bottomLeft','img/bottomLeft.png',150, 120,3);
-            game.load.spritesheet('button_bottomRightLeft','img/bottomRight.png',150, 120,3);
+            game.load.spritesheet('button_topLeft','img/topLeft.png', 200, 200,3);
+            game.load.spritesheet('button_topRight','img/topRight.png',200, 200,3);
+            game.load.spritesheet('button_bottomLeft','img/bottomLeft.png',200, 200,3);
+            game.load.spritesheet('button_bottomRightLeft','img/bottomRight.png',200, 200,3);
             game.load.image('gameOver','img/gameover.png');
             game.load.audio('splash','snd/splash.ogg');
             game.load.audio('collect','snd/collect.ogg');
@@ -265,8 +265,8 @@
                         var email = 'tynutzu@gmail.com';
                         var gamename = 'EggDrop';
                         if (!scoreSubmitted) {
-                            submitScore(gamename, name, email, score.getScore());
-                            scoreSubmitted = true;
+                            //submitScore(gamename, name, email, score.getScore());
+                            //scoreSubmitted = true;
                         }
                         gameRunning = false;
                     }
