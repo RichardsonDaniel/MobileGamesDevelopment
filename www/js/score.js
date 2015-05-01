@@ -11,6 +11,13 @@ Score = function() {
     var score = 0;
     var visible;
     var livesImage;
+    var highScoreData;
+    var ranksObtained = false;
+};
+
+// function to store locally the highscore data from the web server
+Score.prototype.setHighScoreData = function(obj) {
+    this.highScoreData = obj;
 };
 
 // setter and getter for score
@@ -18,6 +25,12 @@ Score.prototype.setScore = function(collectedEggs) {
     this.score = collectedEggs;
 };
 
+// mark ranks as obtained
+Score.prototype.getRank = function() {
+    this.ranksObtained = true;
+}
+
+// getter for score
 Score.prototype.getScore = function() {
     return this.score;
 }
@@ -42,6 +55,28 @@ Score.prototype.create = function() {
     this.makeVisible();
     this.livesImage = game.add.sprite(420, 60, 'lives', this.livesLeft);
 };
+
+// function to render highscore
+Score.prototype.showHighScore = function() {
+
+    if (this.ranksObtained) {
+        /*
+         max represents the maximum number of results to display
+         if we have less than 10 results stored online, show them all
+         else show only 10
+         */
+        var max, i;
+        if (this.highScoreData !== undefined) {
+            if (this.highScoreData.scores.length < 11) max = this.highScoreData.scores.length;
+            else max = 10;
+            game.debug.text('LEADERBOARD', 300, 180, 'yellow', '50px Fixedsys');
+            for (i = 0; i < max; i++) {
+                game.debug.text(this.highScoreData.scores[i].name, 300, 210 + i * 35, 'yellow', '16px Fixedsys');
+                game.debug.text(this.highScoreData.scores[i].score, 650, 210 + i * 35, 'yellow', '16px Fixedsys');
+            }
+        }
+    }
+}
 
 // display score
 Score.prototype.render = function() {

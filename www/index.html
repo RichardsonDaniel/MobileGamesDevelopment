@@ -7,9 +7,9 @@
     <script src="js/egg.js"></script>
     <script src="js/score.js"></script>
     <script src="js/input.js"></script>
-	
+
 	<script>
-		
+
 		var game = new Phaser.Game(960,600, Phaser.AUTO, 'phaser-example',
 				{ preload: preload, create: create, update: update, render: render });
 
@@ -34,7 +34,7 @@
             game.load.audio('gameover','snd/gameover.ogg');
 
         }
-		
+
 		var background;
 		var logo;
         var Hint;
@@ -44,6 +44,7 @@
         var howToRemoved = false;
         var scoreSubmitted = false;
         var rankListObtained = false;
+        var highScoreData;
 		var player = new Player();
         var maximumNumberOfEggs = 1;    // maximum number of active eggs
         var eggs = [];                  // array holding all the eggs
@@ -151,18 +152,12 @@
 
         function showScoreTable(obj) {
             if (obj !== undefined) {
-                var s = "", i;
-                for (i = 0; i < obj.scores.length; i += 1) {
-                    s += obj.scores[i].name + ' : ' + obj.scores[i].score + '\n';
-                }
-                // uncomment if you want to have this url shown on screen
-                document.getElementById("url").innerHTML = s;
+                score.setHighScoreData(obj);
             }
         }
 
         function getTable() {
             var url = "http://www.mcm-highscores-hrd.appspot.com/scoresjson?game=EggDrop&func=?";
-            // document.getElementById('url').innerText = url;
             $.ajax({
                 type: "GET",
                 url: url,
@@ -267,7 +262,7 @@
                         maximumNumberOfEggs = 0;
                         soundGameOver.play();
                         name = nameRequest();
-                        var email = 'Richardson.daniel@hotmail.co.uk';
+                        var email = 'tynutzu@gmail.com';
                         var gamename = 'EggDrop';
                         if (!scoreSubmitted) {
                             submitScore(gamename, name, email, score.getScore());
@@ -281,12 +276,14 @@
 
         function render() {
             score.render();
+            if (rankListObtained) {
+                score.getRank();
+                score.showHighScore()
+            }
         }
-		
+
 	</script>
 </head>
 <body bgcolor="black">
-<div id='url'></div>
-<div id='scoretable'></div>
 </body>
 </html>
