@@ -32,18 +32,19 @@
             game.load.audio('hundred','snd/100.ogg');
             game.load.audio('life','snd/extralife.ogg');
             game.load.audio('gameover','snd/gameover.ogg');
+            game.load.audio('music','snd/music.ogg')
 
         }
 
 		var background;
 		var logo;
-        var Hint;
+        var Controls;
         var About;
 		var gameRunning = false;
         var logoRemoved = false;
-        var howToRemoved = false;
+        var controlsRemoved = false;
         var scoreSubmitted = false;
-        var rankListObtained = false;
+        var rankListDisplayed = false;
         var highScoreData;
 		var player = new Player();
         var maximumNumberOfEggs = 1;    // maximum number of active eggs
@@ -57,6 +58,7 @@
         var soundGameOver;
         var soundHundred;
         var soundLife;
+        var soundMusic;
 
 		function create() {
             game.scale.forceOrientation(true)
@@ -66,7 +68,7 @@
 			background = game.add.sprite(0, 0, 'backgroundImage');
 			player.create();
             About = game.add.sprite(0, 0, 'about');
-            Hint = game.add.sprite(0, 0, 'how');
+            Controls = game.add.sprite(0, 0, 'how');
 			logo = game.add.sprite(0, 0, 'logo');
 			game.input.onDown.add(runOnKeyPress, this);
             score.create();
@@ -76,45 +78,52 @@
 
             soundGameOver = game.add.audio('gameover');     // sound to be played at the end of the game
             soundHundred = game.add.audio('hundred');       // sound to be played every 100 collected eggs
+            soundMusic = game.add.audio('music');
 		}
 
-        /*
-            So if we have removed the logo
-                check if we have removed the How Screen
-                    then remove the About Screen and start the game
-                else
-                    remove the How Screen
-            else
-                remove the logo
-
-            also get the highscores from the database on key press after
-            the score has been submitted
-        */
-		function runOnKeyPress() {
+        function runOnKeyPress() {
+            // if we`re not in the logo state
             if (logoRemoved) {
-                if (howToRemoved) {
+                // if we are not in controls state
+                if (controlsRemoved) {
+                    // means we`re in about
+                    // so delete it and go to game state
                     About.kill();
                     gameRunning = true;
                     input.showButtons(true);
                     score.makeVisible();
                 }
+                // if we are in controls state
                 else
                 {
-                    Hint.kill();
-                    howToRemoved = true;
+                    Controls.kill();
+                    controlsRemoved = true;
                 }
 
             }
+            // if we are in logo state
             else {
                 logo.kill();
                 logoRemoved = true;
             }
 
+            // need to test this first to make sure there`s another update
+            // showing the table before we quit
+            // if the scores are submited and the ranklist was displayed
+            if (scoreSubmitted && rankListDisplayed)
+            {
+                // terminate the application
+                window.close();
+            }
+
+            // if the scores are submited
             if (scoreSubmitted)
             {
-                if (!rankListObtained) {
+                // if we didn`t get the highscore table
+                if (!rankListDisplayed) {
+                    // get it and never come back in this block of code :)
                     getTable();
-                    rankListObtained = true;
+                    rankListDisplayed = true;
                 }
             }
 		}
@@ -150,7 +159,8 @@
             });
         };
 
-        function showScoreTable(obj) {
+        // function to store the web data into our score object
+        function parseWebData(obj) {
             if (obj !== undefined) {
                 score.setHighScoreData(obj);
             }
@@ -163,7 +173,7 @@
                 url: url,
                 async: true,
                 // Note, instead of this we could have a success function...
-                jsonpCallback: 'showScoreTable',
+                jsonpCallback: 'parseWebData',
                 contentType: 'application/json',
                 dataType: 'jsonp',
                 error: function (e) {
@@ -265,18 +275,29 @@
                         var email = 'tynutzu@gmail.com';
                         var gamename = 'EggDrop';
                         if (!scoreSubmitted) {
-                            //submitScore(gamename, name, email, score.getScore());
-                            //scoreSubmitted = true;
+                            submitScore(gamename, name, email, score.getScore());
+                            scoreSubmitted = true;
                         }
                         gameRunning = false;
                     }
+                }
+            }
+
+            /*
+            for some reason the loop method of a sound does not seem to work
+            so we had to design this function that checks if the sound is playing
+            and if not, start it
+             */
+            {
+                if (!soundMusic.isPlaying) {
+                    soundMusic.play('',0,0.7);
                 }
             }
 		}
 
         function render() {
             score.render();
-            if (rankListObtained) {
+            if (rankListDisplayed) {
                 score.getRank();
                 score.showHighScore()
             }
